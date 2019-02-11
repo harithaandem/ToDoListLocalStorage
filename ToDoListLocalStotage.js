@@ -1,14 +1,14 @@
-var toDoList = (function () {
+(function () {
     var toDoListArray = [], toDoId = 0;
-    var selectedElement, selectedParentElement, toDoItemId, toDoStatus=false;
+    var selectedElement, selectedParentElement, toDoItemId, toDoStatus = false, toDoChecked = false;
 
     retrieveLocalStorage();
 
-    function ToDoConstructor(toDoText, toDoId, toDoStatus) {
+    function ToDoConstructor(toDoText, toDoId, toDoStatus, toDoChecked) {
         this.toDoText = toDoText;
         this.toDoId = toDoId;
         this.toDoStatus = toDoStatus;
-        this.toDoChecked = false;
+        this.toDoChecked = toDoChecked;
     }
 
     ToDoConstructor.prototype.updatingArray = function(toDoItemId) {
@@ -37,8 +37,8 @@ var toDoList = (function () {
       localFun(toDoListArray);
     } 
 
-    ToDoConstructor.prototype.toDoDelete= function(toDoItemId) {
-        selectedParentElement=document.querySelector(`[todoId="${toDoItemId}"]`);
+    ToDoConstructor.prototype.toDoDelete = function(toDoItemId) {
+        selectedParentElement = document.querySelector(`[todoId="${toDoItemId}"]`);
         selectedParentElement.remove();
         toDoListArray.splice(toDoItemId,1);
         this.updatingArray(toDoItemId);
@@ -46,10 +46,15 @@ var toDoList = (function () {
         localFun(toDoListArray);
     }
 
-    ToDoConstructor.prototype.toDoUpdate = function(toDoItemId,selectedElement) {
+    ToDoConstructor.prototype.toDoUpdate = function(selectedElement) {
         var updateFromPrompt = prompt("enter to update"," ");
         selectedElement.textContent += updateFromPrompt;
         this.toDoText = selectedElement.textContent;
+        localFun(toDoListArray);
+    }
+
+    ToDoConstructor.prototype.toDoCheck = function() {
+        this.toDoChecked = !(this.toDoChecked);
         localFun(toDoListArray);
     }
 
@@ -75,7 +80,7 @@ var toDoList = (function () {
         clone.setAttribute("toDoId",toDoId);
         clone.classList.remove("inner_div");
         clone.classList.add("div_list");
-        var toDoElement = new ToDoConstructor(descriptionToBeAdded,toDoId,toDoStatus);
+        var toDoElement = new ToDoConstructor(descriptionToBeAdded, toDoId, toDoStatus, toDoChecked);
         toDoListArray.push(toDoElement);
         localFun(toDoListArray);
         document.querySelector(".bottom").appendChild(clone);
@@ -97,7 +102,7 @@ var toDoList = (function () {
         localFun(toDoListArray);
     }
 
-    document.getElementById("delete_all").addEventListener('click',deleteAll);
+    document.getElementById("delete_all").addEventListener('click', deleteAll);
     function deleteAll() {
        for(var j = toDoListArray.length - 1; j >= 0; j--)
          {
@@ -121,17 +126,17 @@ var toDoList = (function () {
                 case "update":
                      toDoListArray[toDoItemId].toDoUpdate(toDoItemId,selectedElement);
                      break;
-                default: break;
+                case "check":
+                     toDoListArray[toDoItemId].toDoCheck();
+                     break;
             }
     };
-    function localFun(toDoListArray)
-    {
+    function localFun(toDoListArray) {
         var string=JSON.stringify(toDoListArray);
         localStorage.setItem("todos",string);
     }
 
-    function retrieveLocalStorage()
-    {
+    function retrieveLocalStorage() {
         var data;
         if (localStorage.getItem('todos')) {
             data = JSON.parse(localStorage.getItem('todos'));
@@ -143,16 +148,22 @@ var toDoList = (function () {
             text = item.toDoText;
             id=item.toDoId;
             status=item.toDoStatus;
-            listMaker(text,id,status);
+            checked=item.toDoChecked;
+            listMaker(text,id,status,checked);
           });
     }
-    function listMaker(text,id,status){
+    function listMaker(text,id,status, checked) {
         switch(status) {
             case "true": status = true;
                     break;
             case "false": status = false;
                     break;
-            default: status= false;
+        }
+        switch(checked) {
+            case "true": checked = true;
+                    break;
+            case "false": checked = false;
+                    break;
         }
         var item = document.querySelector(".inner_div");
         var clone = item.cloneNode(true);
@@ -160,18 +171,20 @@ var toDoList = (function () {
         clone.setAttribute("toDoId",id);
         clone.classList.remove("inner_div");
         clone.classList.add("div_list");
-        var toDoElement = new ToDoConstructor(text,id,status);
+        var toDoElement = new ToDoConstructor(text,id,status,checked);
         toDoListArray.push(toDoElement);
-        if(status)
-        {
+        if(status) {
             clone.querySelector('[data-list="list"]').classList.remove('list');
             clone.querySelector('[data-list="list"]').classList.add('list_changed');
-            clone.querySelector('[data-type="done"]').textContent="DEACTIVE"
+            clone.querySelector('[data-type="done"]').textContent = "DEACTIVE"
         }
-        else{
+        else {
             clone.querySelector('[data-list="list"]').classList.remove('list_changed');
             clone.querySelector('[data-list="list"]').classList.add('list');
-            clone.querySelector('[data-type="done"]').textContent="ACTIVE"
+            clone.querySelector('[data-type="done"]').textContent = "ACTIVE"
+        }
+        if(checked) {  
+             clone.querySelector('[data-type="check"]').setAttribute('checked','checked');
         }
         document.querySelector(".bottom").appendChild(clone);
         toDoId++;  
@@ -179,7 +192,7 @@ var toDoList = (function () {
 
 })();
 
-toDoList;
+
 
 
 
