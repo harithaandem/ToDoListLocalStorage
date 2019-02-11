@@ -145,35 +145,35 @@
           }
           
           data.forEach(item => {
-            text = item.toDoText;
-            id=item.toDoId;
-            status=item.toDoStatus;
-            checked=item.toDoChecked;
-            listMaker(text,id,status,checked);
+            localText = item.toDoText;
+            localId=item.toDoId;
+            localStatus=item.toDoStatus;
+            localChecked=item.toDoChecked;
+            listMaker(localText, localId, localStatus, localChecked);
           });
     }
-    function listMaker(text,id,status, checked) {
-        switch(status) {
-            case "true": status = true;
+    function listMaker(localText, localId, localStatus, localChecked) {
+        switch(localStatus) {
+            case "true": localStatus = true;
                     break;
-            case "false": status = false;
+            case "false": localStatus = false;
                     break;
         }
-        switch(checked) {
-            case "true": checked = true;
+        switch(localChecked) {
+            case "true": localChecked = true;
                     break;
-            case "false": checked = false;
+            case "false": localChecked = false;
                     break;
         }
         var item = document.querySelector(".inner_div");
         var clone = item.cloneNode(true);
-        clone.querySelector('[data-list="list"]').textContent = text;
-        clone.setAttribute("toDoId",id);
+        clone.querySelector('[data-list="list"]').textContent = localText;
+        clone.setAttribute("toDoId",localId);
         clone.classList.remove("inner_div");
         clone.classList.add("div_list");
-        var toDoElement = new ToDoConstructor(text,id,status,checked);
+        var toDoElement = new ToDoConstructor(localText, localId, localStatus, localChecked);
         toDoListArray.push(toDoElement);
-        if(status) {
+        if(localStatus) {
             clone.querySelector('[data-list="list"]').classList.remove('list');
             clone.querySelector('[data-list="list"]').classList.add('list_changed');
             clone.querySelector('[data-type="done"]').textContent = "DEACTIVE"
@@ -183,7 +183,7 @@
             clone.querySelector('[data-list="list"]').classList.add('list');
             clone.querySelector('[data-type="done"]').textContent = "ACTIVE"
         }
-        if(checked) {  
+        if(localChecked) {  
              clone.querySelector('[data-type="check"]').setAttribute('checked','checked');
         }
         document.querySelector(".bottom").appendChild(clone);
