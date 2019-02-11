@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+         <link type="text/css" rel="stylesheet" href="ToDoList.css">
+        <script src="ToDoListLocalStotage.js" defer> </script>
+        <title>TODOLIST</title>
+    </head>
+    <body>
+        <h1>TODOLIST</h1>
+        <div>
+           <div class="top"> 
+              ADD DESCRIPTION: <input type="text"id="textbox" value=" "></input>
+              <button id="add_button" class="button">ADD</button>
+              <button id="delete_selected_button" class="button">DELETE</button>
+              <button id="delete_all" class="button">DELETEALL</button>
+            </div><br>
+            <div class="bottom" id="bottom_div"> 
+                <div  class="inner_div" data-type="list_div">
+                <input type="checkbox" class="check_box" data-check="check">
+                 <li  class="list" data-list="list"> </li>
+                <button class="active" data-type="done">ACTIVE</button>
+                <button class="delete" data-type="delete">REMOVE</button>
+                <button class="update" data-type="update">UPDATE</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
